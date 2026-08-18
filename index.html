@@ -62,7 +62,7 @@
 
     <h1>🎬 Reklam Test</h1>
 
-    <p>AdsGram reklam entegrasyonu</p>
+    <p>AdsGram Reward reklamını test ediyoruz.</p>
 
     <button id="watchAd">
       Reklam İzle
@@ -80,9 +80,10 @@
     tg.expand();
 
 
-    // AdsGram Block ID
+    // AdsGram
     const AdController = window.Adsgram.init({
-      blockId: "43476"
+      blockId: "43478",
+      debug: true
     });
 
 
@@ -94,6 +95,7 @@
     button.addEventListener("click", async () => {
 
       button.disabled = true;
+
       result.textContent = "Reklam yükleniyor...";
 
       try {
@@ -110,7 +112,7 @@
         } else {
 
           result.textContent =
-            "Reklam tamamlanmadı.";
+            "⚠️ Reklam tamamlanmadı.";
 
         }
 
