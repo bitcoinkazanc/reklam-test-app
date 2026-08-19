@@ -39,6 +39,7 @@
     button {
       width: 100%;
       padding: 16px;
+      margin-top: 10px;
       border: 0;
       border-radius: 12px;
       background: #2481cc;
@@ -50,6 +51,10 @@
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+    }
+
+    #secondButton {
+      display: none;
     }
 
     #result {
@@ -67,17 +72,24 @@
 
     <h1>🎬 Reklam Test</h1>
 
-    <p>
-      Önce AdsGram, ardından RichAds reklamı açılır.
+    <p id="description">
+      Önce AdsGram reklamını izleyin.
     </p>
 
-    <button id="watchAds">
-      Reklamları İzle
+    <!-- 1. REKLAM -->
+    <button id="firstButton">
+      1. Reklamı İzle
+    </button>
+
+    <!-- 2. REKLAM -->
+    <button id="secondButton">
+      2. Reklamı İzle
     </button>
 
     <p id="result"></p>
 
   </div>
+
 
   <script>
 
@@ -117,27 +129,32 @@
 
 
     // ==========================================
-    // BUTON
+    // ELEMENTLER
     // ==========================================
 
-    const button =
-      document.getElementById("watchAds");
+    const firstButton =
+      document.getElementById("firstButton");
+
+    const secondButton =
+      document.getElementById("secondButton");
 
     const result =
       document.getElementById("result");
 
-
-    button.addEventListener("click", async () => {
-
-      button.disabled = true;
+    const description =
+      document.getElementById("description");
 
 
-      // ========================================
-      // 1. ADSGRAM
-      // ========================================
+    // ==========================================
+    // 1. ADSGRAM
+    // ==========================================
+
+    firstButton.addEventListener("click", async () => {
+
+      firstButton.disabled = true;
 
       result.textContent =
-        "1/2 AdsGram reklamı yükleniyor...";
+        "AdsGram reklamı yükleniyor...";
 
 
       try {
@@ -145,14 +162,31 @@
         const adsgramResult =
           await adsgramController.show();
 
+
         console.log(
           "AdsGram sonucu:",
           adsgramResult
         );
 
+
+        // AdsGram tamamlandı
         result.textContent =
-          "✅ AdsGram tamamlandı.\n\n" +
-          "2/2 RichAds TEST reklamı yükleniyor...";
+          "✅ 1. reklam tamamlandı.";
+
+
+        description.textContent =
+          "Şimdi ikinci reklamı izleyebilirsiniz.";
+
+
+        // 1. butonu gizle
+        firstButton.style.display =
+          "none";
+
+
+        // 2. butonu göster
+        secondButton.style.display =
+          "block";
+
 
       } catch (error) {
 
@@ -161,19 +195,29 @@
           error
         );
 
+
         result.textContent =
-          "❌ AdsGram reklamı tamamlanmadı.\n\n" +
-          "RichAds reklamına geçilmiyor.";
+          "❌ AdsGram reklamı tamamlanmadı.";
 
-        button.disabled = false;
 
-        return;
+        firstButton.disabled =
+          false;
       }
 
+    });
 
-      // ========================================
-      // 2. RICHADS TEST
-      // ========================================
+
+    // ==========================================
+    // 2. RICHADS
+    // ==========================================
+
+    secondButton.addEventListener("click", async () => {
+
+      secondButton.disabled = true;
+
+      result.textContent =
+        "RichAds reklamı yükleniyor...";
+
 
       try {
 
@@ -188,10 +232,19 @@
         );
 
 
+        // RichAds tamamlandı
         result.textContent =
-          "✅ AdsGram tamamlandı.\n" +
-          "✅ RichAds tamamlandı.\n\n" +
+          "✅ 1. reklam tamamlandı.\n" +
+          "✅ 2. reklam tamamlandı.\n\n" +
           "🎉 İki reklam da tamamlandı!";
+
+
+        description.textContent =
+          "Reklam görevi tamamlandı.";
+
+
+        secondButton.style.display =
+          "none";
 
 
       } catch (error) {
@@ -242,13 +295,13 @@
 
 
         result.textContent =
-          "✅ AdsGram tamamlandı.\n\n" +
-          "❌ RichAds hata:\n" +
+          "❌ RichAds reklamı tamamlanmadı.\n\n" +
           errorText;
+
+
+        secondButton.disabled =
+          false;
       }
-
-
-      button.disabled = false;
 
     });
 
