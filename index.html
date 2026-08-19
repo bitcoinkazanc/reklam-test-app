@@ -19,306 +19,131 @@
     body {
       margin: 0;
       padding: 30px 20px;
+      background: #f5f5f5;
       font-family: Arial, sans-serif;
       text-align: center;
-      background: #f2f2f2;
-    }
-
-    .box {
-      max-width: 400px;
-      margin: 50px auto;
-      padding: 30px 20px;
-      background: white;
-      border-radius: 20px;
     }
 
     h1 {
-      margin-bottom: 15px;
+      margin-bottom: 30px;
     }
 
     button {
       width: 100%;
+      max-width: 320px;
       padding: 16px;
-      margin-top: 10px;
-      border: 0;
+      margin: 10px auto;
+      border: none;
       border-radius: 12px;
-      background: #2481cc;
-      color: white;
       font-size: 18px;
+      font-weight: bold;
       cursor: pointer;
     }
 
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+    #adsgramBtn {
+      background: #0088cc;
+      color: white;
     }
 
-    #secondButton {
+    #richadsBtn {
+      background: #222;
+      color: white;
       display: none;
     }
 
-    #result {
-      margin-top: 20px;
-      font-size: 15px;
-      white-space: pre-wrap;
-      word-break: break-word;
+    #message {
+      margin-top: 25px;
+      font-size: 16px;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="box">
+  <h1>Reklam Test</h1>
 
-    <h1>🎬 Reklam Test</h1>
+  <button id="adsgramBtn">
+    1. Reklamı İzle
+  </button>
 
-    <p id="description">
-      Önce AdsGram reklamını izleyin.
-    </p>
+  <button id="richadsBtn">
+    2. Reklamı İzle
+  </button>
 
-    <!-- 1. REKLAM -->
-    <button id="firstButton">
-      1. Reklamı İzle
-    </button>
-
-    <!-- 2. REKLAM -->
-    <button id="secondButton">
-      2. Reklamı İzle
-    </button>
-
-    <p id="result"></p>
-
-  </div>
-
+  <div id="message"></div>
 
   <script>
+    const adsgramBtn = document.getElementById("adsgramBtn");
+    const richadsBtn = document.getElementById("richadsBtn");
+    const message = document.getElementById("message");
 
-    // ==========================================
-    // TELEGRAM MINI APP
-    // ==========================================
-
-    const tg = window.Telegram.WebApp;
-
-    tg.ready();
-    tg.expand();
-
-
-    // ==========================================
+    // =========================
     // ADSGRAM
-    // ==========================================
+    // =========================
 
-    const adsgramController =
-      window.Adsgram.init({
-        blockId: "43478"
-      });
+    const adsgramController = window.Adsgram.init({
+      blockId: "43530"
+    });
 
+    adsgramBtn.addEventListener("click", async () => {
 
-    // ==========================================
-    // ELEMENTLER
-    // ==========================================
-
-    const firstButton =
-      document.getElementById("firstButton");
-
-    const secondButton =
-      document.getElementById("secondButton");
-
-    const result =
-      document.getElementById("result");
-
-    const description =
-      document.getElementById("description");
-
-
-    // ==========================================
-    // RICHADS CONTROLLER
-    // ==========================================
-
-    let richadsController = null;
-
-
-    // ==========================================
-    // 1. ADSGRAM
-    // ==========================================
-
-    firstButton.addEventListener("click", async () => {
-
-      firstButton.disabled = true;
-
-      result.textContent =
-        "AdsGram reklamı yükleniyor...";
-
+      message.textContent = "AdsGram reklamı hazırlanıyor...";
 
       try {
 
-        const adsgramResult =
-          await adsgramController.show();
+        await adsgramController.show();
 
+        message.textContent = "1. reklam tamamlandı.";
 
-        console.log(
-          "AdsGram sonucu:",
-          adsgramResult
-        );
-
-
-        // AdsGram tamamlandı
-
-        result.textContent =
-          "✅ 1. reklam tamamlandı.";
-
-
-        description.textContent =
-          "Şimdi ikinci reklamı izleyebilirsiniz.";
-
-
-        firstButton.style.display =
-          "none";
-
-
-        secondButton.style.display =
-          "block";
-
+        adsgramBtn.style.display = "none";
+        richadsBtn.style.display = "block";
 
       } catch (error) {
 
-        console.error(
-          "AdsGram hata:",
-          error
-        );
+        console.error("AdsGramError:", error);
 
-
-        result.textContent =
-          "❌ AdsGram reklamı tamamlanmadı.";
-
-
-        firstButton.disabled =
-          false;
+        message.textContent =
+          "AdsGram reklamı gösterilemedi.";
       }
-
     });
 
 
-    // ==========================================
-    // 2. RICHADS
-    // ==========================================
+    // =========================
+    // RICHADS
+    // =========================
 
-    secondButton.addEventListener("click", async () => {
+    richadsBtn.addEventListener("click", async () => {
 
-      secondButton.disabled = true;
-
-      result.textContent =
-        "RichAds reklamı yükleniyor...";
-
+      message.textContent = "RichAds reklamı hazırlanıyor...";
 
       try {
 
-        // ======================================
-        // RICHADS PANEL KODU
-        // ======================================
-
         window.TelegramAdsController =
           new TelegramAdsController();
-
 
         window.TelegramAdsController.initialize({
           pubId: "1020586",
           appId: "8593"
         });
 
-
-        richadsController =
+        const richadsController =
           window.TelegramAdsController;
 
+        await richadsController.triggerInterstitialVideo();
 
-        // ======================================
-        // RICHADS INTERSTITIAL VIDEO
-        // ======================================
+        message.textContent =
+          "Tüm reklamlar tamamlandı. 🎉";
 
-        const richadsResult =
-          await richadsController
-            .triggerInterstitialVideo();
-
-
-        console.log(
-          "RichAds sonucu:",
-          richadsResult
-        );
-
-
-        // ======================================
-        // TAMAMLANDI
-        // ======================================
-
-        result.textContent =
-          "✅ 1. reklam tamamlandı.\n" +
-          "✅ 2. reklam tamamlandı.\n\n" +
-          "🎉 İki reklam da tamamlandı!";
-
-
-        description.textContent =
-          "Reklam görevi tamamlandı.";
-
-
-        secondButton.style.display =
-          "none";
-
+        richadsBtn.style.display = "none";
 
       } catch (error) {
 
-        console.error(
-          "RichAds hata:",
-          error
-        );
+        console.error("RichAdsError:", error);
 
-
-        let errorText = "";
-
-
-        try {
-
-          if (error === null) {
-
-            errorText = "null";
-
-          } else if (error === undefined) {
-
-            errorText = "undefined";
-
-          } else if (typeof error === "string") {
-
-            errorText = error;
-
-          } else if (error.message) {
-
-            errorText = error.message;
-
-          } else {
-
-            errorText =
-              Object.getOwnPropertyNames(error)
-                .map(
-                  key =>
-                    key + ": " + error[key]
-                )
-                .join("\n");
-          }
-
-        } catch (e) {
-
-          errorText =
-            "Hata ayrıntısı okunamadı.";
-        }
-
-
-        result.textContent =
-          "❌ RichAds reklamı tamamlanmadı.\n\n" +
-          errorText;
-
-
-        secondButton.disabled =
-          false;
+        message.textContent =
+          "RichAds reklamı gösterilemedi.";
       }
-
     });
 
   </script>
