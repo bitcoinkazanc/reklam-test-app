@@ -4,13 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Reklam Test</title>
+  <title>RichAds Test</title>
 
   <!-- Telegram Mini App -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <!-- AdsGram -->
-  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
   <!-- RichAds -->
   <script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></script>
@@ -49,6 +46,7 @@
 
     button:disabled {
       opacity: 0.6;
+      cursor: not-allowed;
     }
 
     #result {
@@ -63,22 +61,23 @@
 
   <div class="box">
 
-    <h1>🎬 Reklam Test</h1>
+    <h1>🎬 RichAds Test</h1>
 
-    <p>AdsGram → RichAds test uygulaması</p>
+    <p>Telegram Interstitial Video</p>
 
     <button id="watchAd">
-      Reklam İzle
+      RichAds Reklamını İzle
     </button>
 
     <p id="result"></p>
 
   </div>
 
+
   <script>
 
     // ==========================================
-    // TELEGRAM
+    // TELEGRAM MINI APP
     // ==========================================
 
     const tg = window.Telegram.WebApp;
@@ -88,21 +87,12 @@
 
 
     // ==========================================
-    // ADSGRAM
-    // ==========================================
-
-    const AdController = window.Adsgram.init({
-      blockId: "43478",
-      debug: true
-    });
-
-
-    // ==========================================
     // RICHADS
     // ==========================================
 
     const richadsController =
       new window.TelegramAdsController();
+
 
     richadsController.initialize({
       pubId: "1020586",
@@ -115,100 +105,98 @@
     // BUTON
     // ==========================================
 
-    const button = document.getElementById("watchAd");
-    const result = document.getElementById("result");
+    const button =
+      document.getElementById("watchAd");
+
+    const result =
+      document.getElementById("result");
 
 
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
 
       button.disabled = true;
 
       result.textContent =
-        "1/2 AdsGram reklamı açılıyor...";
+        "RichAds reklamı yükleniyor...";
 
 
-      // ==========================================
-      // ADSGRAM
-      // ==========================================
+      console.log(
+        "RichAds Interstitial Video başlatılıyor..."
+      );
 
-      AdController.show()
 
-        .then((adResult) => {
+      try {
 
-          console.log("AdsGram sonucu:", adResult);
+        const adResult =
+          await richadsController.triggerInterstitialVideo();
 
-          if (!adResult.done) {
 
-            result.textContent =
-              "⚠️ AdsGram tamamlanmadı.";
+        console.log(
+          "RichAds sonucu:",
+          adResult
+        );
 
-            button.disabled = false;
 
-            return;
+        result.textContent =
+          "✅ RichAds reklamı tamamlandı!";
+
+
+      } catch (error) {
+
+        console.error(
+          "RichAds gerçek hata:",
+          error
+        );
+
+
+        // Hata nesnesini mümkün olduğunca
+        // ekranda göster
+
+        let errorText = "";
+
+        try {
+
+          if (error === null) {
+
+            errorText = "null";
+
+          } else if (error === undefined) {
+
+            errorText = "undefined";
+
+          } else if (typeof error === "string") {
+
+            errorText = error;
+
+          } else if (error.message) {
+
+            errorText = error.message;
+
+          } else {
+
+            errorText =
+              Object.getOwnPropertyNames(error)
+                .map(key => key + ": " + error[key])
+                .join("\n");
+
           }
 
+        } catch (e) {
 
-          // ========================================
-          // RICHADS
-          // ========================================
+          errorText =
+            "Hata ayrıntısı okunamadı.";
 
-          result.textContent =
-            "✅ AdsGram tamamlandı. RichAds açılıyor...";
-
-
-          console.log(
-            "RichAds reklamı çağrılıyor..."
-          );
+        }
 
 
-          return richadsController
-            .triggerInterstitialVideo()
+        result.textContent =
+          "❌ RichAds hata:\n" +
+          errorText;
 
-            .then((richAdsResult) => {
+      }
 
-              console.log(
-                "RichAds sonucu:",
-                richAdsResult
-              );
 
-              result.textContent =
-                "🎉 AdsGram + RichAds tamamlandı!";
-
-            })
-
-            .catch((richAdsError) => {
-
-              console.error(
-                "RichAds GERÇEK HATA:",
-                richAdsError
-              );
-
-              result.textContent =
-                "❌ RichAds hata: " +
-                JSON.stringify(richAdsError);
-
-            });
-
-        })
-
-        .catch((adsGramError) => {
-
-          console.error(
-            "AdsGram hata:",
-            adsGramError
-          );
-
-          result.textContent =
-            "❌ AdsGram hata: " +
-            JSON.stringify(adsGramError);
-
-        })
-
-        .finally(() => {
-
-          button.disabled = false;
-
-        });
+      button.disabled = false;
 
     });
 
