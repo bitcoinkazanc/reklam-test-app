@@ -74,7 +74,7 @@
 
     <h1>🎬 Reklam Test</h1>
 
-    <p>AdsGram ve RichAds reklamlarını test ediyoruz.</p>
+    <p>AdsGram → RichAds test uygulaması</p>
 
     <button id="watchAd">
       Reklam İzle
@@ -85,6 +85,7 @@
   </div>
 
   <script>
+
     // ==========================================
     // TELEGRAM MINI APP
     // ==========================================
@@ -130,7 +131,14 @@
         if (adResult.done) {
 
           result.textContent =
-            "✅ AdsGram reklamı tamamlandı!";
+            "✅ AdsGram tamamlandı. RichAds aşamasına geçilecek.";
+
+          /*
+            BURAYA RICHADS REKLAM ÇAĞRISI GELECEK.
+
+            RichAds'ın Interstitial Video widget
+            kodunu aldığımızda burada çalıştıracağız.
+          */
 
         } else {
 
