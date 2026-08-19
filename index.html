@@ -7,7 +7,7 @@
   <title>RichAds Test</title>
 
   <!-- Telegram Mini App -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
 
   <!-- RichAds -->
   <script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></script>
@@ -96,7 +96,8 @@
 
     richadsController.initialize({
       pubId: "1020586",
-      appId: "8593"
+      appId: "8593",
+      debug: true
     });
 
 
@@ -116,7 +117,7 @@
       button.disabled = true;
 
       result.textContent =
-        "RichAds reklamı yükleniyor...";
+        "RichAds test reklamı yükleniyor...";
 
 
       richadsController
@@ -182,13 +183,12 @@
             "❌ RichAds hata:\n" +
             errorText;
 
-        })
-
-        .finally(() => {
-
-          button.disabled = false;
-
         });
+
+      
+      setTimeout(() => {
+        button.disabled = false;
+      }, 3000);
 
     });
 
