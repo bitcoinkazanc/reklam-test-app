@@ -161,9 +161,7 @@
         );
 
 
-        // ======================================
-        // ADSGRAM TAMAMLANDI
-        // ======================================
+        // AdsGram tamamlandı
 
         result.textContent =
           "✅ 1. reklam tamamlandı.";
@@ -215,22 +213,25 @@
       try {
 
         // ======================================
-        // RICHADS SADECE BURADA BAŞLATILIYOR
+        // RICHADS PANEL KODU
         // ======================================
 
-        richadsController =
-          new window.TelegramAdsController();
+        window.TelegramAdsController =
+          new TelegramAdsController();
 
 
-        richadsController.initialize({
+        window.TelegramAdsController.initialize({
           pubId: "1020586",
-          appId: "8593",
-          debug: true
+          appId: "8593"
         });
 
 
+        richadsController =
+          window.TelegramAdsController;
+
+
         // ======================================
-        // RICHADS REKLAMINI AÇ
+        // RICHADS INTERSTITIAL VIDEO
         // ======================================
 
         const richadsResult =
@@ -245,7 +246,7 @@
 
 
         // ======================================
-        // RICHADS TAMAMLANDI
+        // TAMAMLANDI
         // ======================================
 
         result.textContent =
