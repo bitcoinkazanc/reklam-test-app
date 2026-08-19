@@ -15,15 +15,6 @@
   <!-- RichAds SDK -->
   <script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></script>
 
-  <script>
-    window.TelegramAdsController = new TelegramAdsController();
-
-    window.TelegramAdsController.initialize({
-      pubId: "1020586",
-      appId: "8593",
-    });
-  </script>
-
   <style>
     body {
       margin: 0;
@@ -107,6 +98,20 @@
 
 
     // ==========================================
+    // RICHADS
+    // ==========================================
+
+    const richadsController =
+      new window.TelegramAdsController();
+
+    richadsController.initialize({
+      pubId: "1020586",
+      appId: "8593",
+      debug: true
+    });
+
+
+    // ==========================================
     // BUTON
     // ==========================================
 
@@ -118,47 +123,86 @@
 
       button.disabled = true;
 
-      result.textContent = "AdsGram reklamı yükleniyor...";
+      result.textContent =
+        "1/2 AdsGram reklamı yükleniyor...";
 
+
+      // ==========================================
+      // 1. ADSGRAM
+      // ==========================================
 
       try {
 
-        const adResult = await AdController.show();
+        const adResult =
+          await AdController.show();
 
-        console.log("AdsGram sonucu:", adResult);
+        console.log(
+          "AdsGram sonucu:",
+          adResult
+        );
 
 
-        if (adResult.done) {
-
-          result.textContent =
-            "✅ AdsGram tamamlandı. RichAds aşamasına geçilecek.";
-
-          /*
-            BURAYA RICHADS REKLAM ÇAĞRISI GELECEK.
-
-            RichAds'ın Interstitial Video widget
-            kodunu aldığımızda burada çalıştıracağız.
-          */
-
-        } else {
+        if (!adResult.done) {
 
           result.textContent =
             "⚠️ AdsGram reklamı tamamlanmadı.";
 
+          button.disabled = false;
+
+          return;
         }
 
-      } catch (error) {
 
-        console.error("AdsGram hata:", error);
+        // ==========================================
+        // 2. RICHADS
+        // ==========================================
+
+        result.textContent =
+          "✅ AdsGram tamamlandı. 2/2 RichAds reklamı yükleniyor...";
+
+
+        try {
+
+          const richAdsResult =
+            await richadsController.triggerInterstitialVideo();
+
+          console.log(
+            "RichAds sonucu:",
+            richAdsResult
+          );
+
+
+          result.textContent =
+            "🎉 AdsGram + RichAds tamamlandı!";
+
+
+        } catch (richAdsError) {
+
+          console.error(
+            "RichAds hata:",
+            richAdsError
+          );
+
+          result.textContent =
+            "❌ RichAds reklamı gösterilemedi.";
+
+        }
+
+
+      } catch (adsGramError) {
+
+        console.error(
+          "AdsGram hata:",
+          adsGramError
+        );
 
         result.textContent =
           "❌ AdsGram reklamı gösterilemedi.";
 
-      } finally {
-
-        button.disabled = false;
-
       }
+
+
+      button.disabled = false;
 
     });
 
