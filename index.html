@@ -12,6 +12,18 @@
   <!-- AdsGram SDK -->
   <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
+  <!-- RichAds SDK -->
+  <script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></script>
+
+  <script>
+    window.TelegramAdsController = new TelegramAdsController();
+
+    window.TelegramAdsController.initialize({
+      pubId: "1020586",
+      appId: "8593",
+    });
+  </script>
+
   <style>
     body {
       margin: 0;
@@ -62,7 +74,7 @@
 
     <h1>🎬 Reklam Test</h1>
 
-    <p>AdsGram Reward reklamını test ediyoruz.</p>
+    <p>AdsGram ve RichAds reklamlarını test ediyoruz.</p>
 
     <button id="watchAd">
       Reklam İzle
@@ -73,21 +85,30 @@
   </div>
 
   <script>
-    // Telegram Mini App
+    // ==========================================
+    // TELEGRAM MINI APP
+    // ==========================================
+
     const tg = window.Telegram.WebApp;
 
     tg.ready();
     tg.expand();
 
 
-    // AdsGram
+    // ==========================================
+    // ADSGRAM
+    // ==========================================
+
     const AdController = window.Adsgram.init({
       blockId: "43478",
       debug: true
     });
 
 
-    // Reklam butonu
+    // ==========================================
+    // BUTON
+    // ==========================================
+
     const button = document.getElementById("watchAd");
     const result = document.getElementById("result");
 
@@ -96,7 +117,8 @@
 
       button.disabled = true;
 
-      result.textContent = "Reklam yükleniyor...";
+      result.textContent = "AdsGram reklamı yükleniyor...";
+
 
       try {
 
@@ -104,15 +126,16 @@
 
         console.log("AdsGram sonucu:", adResult);
 
+
         if (adResult.done) {
 
           result.textContent =
-            "✅ Reklam tamamlandı! Test başarılı.";
+            "✅ AdsGram reklamı tamamlandı!";
 
         } else {
 
           result.textContent =
-            "⚠️ Reklam tamamlanmadı.";
+            "⚠️ AdsGram reklamı tamamlanmadı.";
 
         }
 
@@ -121,7 +144,7 @@
         console.error("AdsGram hata:", error);
 
         result.textContent =
-          "❌ Reklam gösterilemedi.";
+          "❌ AdsGram reklamı gösterilemedi.";
 
       } finally {
 
@@ -130,6 +153,7 @@
       }
 
     });
+
   </script>
 
 </body>
