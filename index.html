@@ -114,21 +114,6 @@
 
 
     // ==========================================
-    // RICHADS
-    // ==========================================
-
-    const richadsController =
-      new window.TelegramAdsController();
-
-
-    richadsController.initialize({
-      pubId: "1020586",
-      appId: "8593",
-      debug: true
-    });
-
-
-    // ==========================================
     // ELEMENTLER
     // ==========================================
 
@@ -143,6 +128,13 @@
 
     const description =
       document.getElementById("description");
+
+
+    // ==========================================
+    // RICHADS CONTROLLER
+    // ==========================================
+
+    let richadsController = null;
 
 
     // ==========================================
@@ -169,7 +161,10 @@
         );
 
 
-        // AdsGram tamamlandı
+        // ======================================
+        // ADSGRAM TAMAMLANDI
+        // ======================================
+
         result.textContent =
           "✅ 1. reklam tamamlandı.";
 
@@ -178,12 +173,10 @@
           "Şimdi ikinci reklamı izleyebilirsiniz.";
 
 
-        // 1. butonu gizle
         firstButton.style.display =
           "none";
 
 
-        // 2. butonu göster
         secondButton.style.display =
           "block";
 
@@ -221,6 +214,25 @@
 
       try {
 
+        // ======================================
+        // RICHADS SADECE BURADA BAŞLATILIYOR
+        // ======================================
+
+        richadsController =
+          new window.TelegramAdsController();
+
+
+        richadsController.initialize({
+          pubId: "1020586",
+          appId: "8593",
+          debug: true
+        });
+
+
+        // ======================================
+        // RICHADS REKLAMINI AÇ
+        // ======================================
+
         const richadsResult =
           await richadsController
             .triggerInterstitialVideo();
@@ -232,7 +244,10 @@
         );
 
 
-        // RichAds tamamlandı
+        // ======================================
+        // RICHADS TAMAMLANDI
+        // ======================================
+
         result.textContent =
           "✅ 1. reklam tamamlandı.\n" +
           "✅ 2. reklam tamamlandı.\n\n" +
