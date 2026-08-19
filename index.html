@@ -52,6 +52,7 @@
     #result {
       margin-top: 20px;
       font-size: 15px;
+      white-space: pre-wrap;
       word-break: break-word;
     }
   </style>
@@ -72,7 +73,6 @@
     <p id="result"></p>
 
   </div>
-
 
   <script>
 
@@ -96,8 +96,7 @@
 
     richadsController.initialize({
       pubId: "1020586",
-      appId: "8593",
-      debug: true
+      appId: "8593"
     });
 
 
@@ -112,7 +111,7 @@
       document.getElementById("result");
 
 
-    button.addEventListener("click", async () => {
+    button.addEventListener("click", () => {
 
       button.disabled = true;
 
@@ -120,83 +119,76 @@
         "RichAds reklamı yükleniyor...";
 
 
-      console.log(
-        "RichAds Interstitial Video başlatılıyor..."
-      );
+      richadsController
+        .triggerInterstitialVideo()
 
+        .then((adResult) => {
 
-      try {
+          console.log(
+            "RichAds sonucu:",
+            adResult
+          );
 
-        const adResult =
-          await richadsController.triggerInterstitialVideo();
+          result.textContent =
+            "✅ RichAds reklamı tamamlandı!";
 
+        })
 
-        console.log(
-          "RichAds sonucu:",
-          adResult
-        );
+        .catch((error) => {
 
+          console.error(
+            "RichAds hata:",
+            error
+          );
 
-        result.textContent =
-          "✅ RichAds reklamı tamamlandı!";
+          let errorText = "";
 
+          try {
 
-      } catch (error) {
+            if (error === null) {
 
-        console.error(
-          "RichAds gerçek hata:",
-          error
-        );
+              errorText = "null";
 
+            } else if (error === undefined) {
 
-        // Hata nesnesini mümkün olduğunca
-        // ekranda göster
+              errorText = "undefined";
 
-        let errorText = "";
+            } else if (typeof error === "string") {
 
-        try {
+              errorText = error;
 
-          if (error === null) {
+            } else if (error.message) {
 
-            errorText = "null";
+              errorText = error.message;
 
-          } else if (error === undefined) {
+            } else {
 
-            errorText = "undefined";
+              errorText =
+                Object.getOwnPropertyNames(error)
+                  .map(key => key + ": " + error[key])
+                  .join("\n");
 
-          } else if (typeof error === "string") {
+            }
 
-            errorText = error;
-
-          } else if (error.message) {
-
-            errorText = error.message;
-
-          } else {
+          } catch (e) {
 
             errorText =
-              Object.getOwnPropertyNames(error)
-                .map(key => key + ": " + error[key])
-                .join("\n");
+              "Hata ayrıntısı okunamadı.";
 
           }
 
-        } catch (e) {
 
-          errorText =
-            "Hata ayrıntısı okunamadı.";
+          result.textContent =
+            "❌ RichAds hata:\n" +
+            errorText;
 
-        }
+        })
 
+        .finally(() => {
 
-        result.textContent =
-          "❌ RichAds hata:\n" +
-          errorText;
+          button.disabled = false;
 
-      }
-
-
-      button.disabled = false;
+        });
 
     });
 
