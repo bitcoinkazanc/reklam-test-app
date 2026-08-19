@@ -7,7 +7,7 @@
   <title>Reklam Test</title>
 
   <!-- Telegram Mini App -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
 
   <!-- AdsGram -->
   <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
@@ -79,7 +79,6 @@
 
   </div>
 
-
   <script>
 
     // ==========================================
@@ -112,7 +111,8 @@
 
     richadsController.initialize({
       pubId: "1020586",
-      appId: "8593"
+      appId: "8593",
+      debug: true
     });
 
 
@@ -131,13 +131,14 @@
 
       button.disabled = true;
 
-      result.textContent =
-        "1/2 AdsGram reklamı yükleniyor...";
-
 
       // ========================================
       // 1. ADSGRAM
       // ========================================
+
+      result.textContent =
+        "1/2 AdsGram reklamı yükleniyor...";
+
 
       try {
 
@@ -151,8 +152,7 @@
 
         result.textContent =
           "✅ AdsGram tamamlandı.\n\n" +
-          "2/2 RichAds reklamı yükleniyor...";
-
+          "2/2 RichAds TEST reklamı yükleniyor...";
 
       } catch (error) {
 
@@ -172,7 +172,7 @@
 
 
       // ========================================
-      // 2. RICHADS
+      // 2. RICHADS TEST
       // ========================================
 
       try {
@@ -247,10 +247,6 @@
           errorText;
       }
 
-
-      // ========================================
-      // BUTONU TEKRAR AKTİF ET
-      // ========================================
 
       button.disabled = false;
 
