@@ -9,10 +9,10 @@
   <!-- Telegram Mini App -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <!-- AdsGram SDK -->
+  <!-- AdsGram -->
   <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
-  <!-- RichAds SDK -->
+  <!-- RichAds -->
   <script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></script>
 
   <style>
@@ -49,12 +49,12 @@
 
     button:disabled {
       opacity: 0.6;
-      cursor: not-allowed;
     }
 
     #result {
       margin-top: 20px;
       font-size: 15px;
+      word-break: break-word;
     }
   </style>
 </head>
@@ -78,7 +78,7 @@
   <script>
 
     // ==========================================
-    // TELEGRAM MINI APP
+    // TELEGRAM
     // ==========================================
 
     const tg = window.Telegram.WebApp;
@@ -119,90 +119,96 @@
     const result = document.getElementById("result");
 
 
-    button.addEventListener("click", async () => {
+    button.addEventListener("click", () => {
 
       button.disabled = true;
 
       result.textContent =
-        "1/2 AdsGram reklamı yükleniyor...";
+        "1/2 AdsGram reklamı açılıyor...";
 
 
       // ==========================================
-      // 1. ADSGRAM
+      // ADSGRAM
       // ==========================================
 
-      try {
+      AdController.show()
 
-        const adResult =
-          await AdController.show();
+        .then((adResult) => {
 
-        console.log(
-          "AdsGram sonucu:",
-          adResult
-        );
+          console.log("AdsGram sonucu:", adResult);
+
+          if (!adResult.done) {
+
+            result.textContent =
+              "⚠️ AdsGram tamamlanmadı.";
+
+            button.disabled = false;
+
+            return;
+          }
 
 
-        if (!adResult.done) {
+          // ========================================
+          // RICHADS
+          // ========================================
 
           result.textContent =
-            "⚠️ AdsGram reklamı tamamlanmadı.";
+            "✅ AdsGram tamamlandı. RichAds açılıyor...";
+
+
+          console.log(
+            "RichAds reklamı çağrılıyor..."
+          );
+
+
+          return richadsController
+            .triggerInterstitialVideo()
+
+            .then((richAdsResult) => {
+
+              console.log(
+                "RichAds sonucu:",
+                richAdsResult
+              );
+
+              result.textContent =
+                "🎉 AdsGram + RichAds tamamlandı!";
+
+            })
+
+            .catch((richAdsError) => {
+
+              console.error(
+                "RichAds GERÇEK HATA:",
+                richAdsError
+              );
+
+              result.textContent =
+                "❌ RichAds hata: " +
+                JSON.stringify(richAdsError);
+
+            });
+
+        })
+
+        .catch((adsGramError) => {
+
+          console.error(
+            "AdsGram hata:",
+            adsGramError
+          );
+
+          result.textContent =
+            "❌ AdsGram hata: " +
+            JSON.stringify(adsGramError);
+
+        })
+
+        .finally(() => {
 
           button.disabled = false;
 
-          return;
-        }
-
-
-        // ==========================================
-        // 2. RICHADS
-        // ==========================================
-
-        result.textContent =
-          "✅ AdsGram tamamlandı. 2/2 RichAds reklamı yükleniyor...";
-
-
-        try {
-
-          const richAdsResult =
-            await richadsController.triggerInterstitialVideo();
-
-          console.log(
-            "RichAds sonucu:",
-            richAdsResult
-          );
-
-
-          result.textContent =
-            "🎉 AdsGram + RichAds tamamlandı!";
-
-
-        } catch (richAdsError) {
-
-          console.error(
-            "RichAds hata:",
-            richAdsError
-          );
-
-          result.textContent =
-            "❌ RichAds reklamı gösterilemedi.";
-
-        }
-
-
-      } catch (adsGramError) {
-
-        console.error(
-          "AdsGram hata:",
-          adsGramError
-        );
-
-        result.textContent =
-          "❌ AdsGram reklamı gösterilemedi.";
-
-      }
-
-
-      button.disabled = false;
+        });
 
     });
 
